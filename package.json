@@ -2,6 +2,9 @@
   "name": "htmx-with-bun",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dizzle-push": "drizzle-kit push:sqlite"
+  },
   "devDependencies": {
     "bun-types": "latest"
   },
@@ -9,6 +12,6 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "instant-bun": "latest"
+    "instant-bun": "0.0.9"
   }
 }

@@ -1,4 +1,5 @@
 import { createServerFactory } from "instant-bun/modules/server-factory";
+import { createNote, readNotes } from "./db";
 import tailwindConfig from "./tailwind.config";
 
 const server = createServerFactory();
@@ -26,6 +27,16 @@ const htmlDoc = `
         <button hx-post="/clicked" hx-swap="outerHTML">
         Click Me
       </button>
+
+      <button hx-post="/add-note" hx-swap="afterend">
+        Add Note
+      </button>
+
+      <div>
+        
+      </div>
+
+
     </body>
 </html>
 
@@ -56,6 +67,16 @@ server.addRoute("/clicked", () => {
       },
     }
   );
+});
+
+server.addRoute("/add-note", async () => {
+  await createNote({
+    id: "test",
+    text: "This is a test note",
+  });
+
+  const notes = await readNotes();
+  return new Response(`<pre>${JSON.stringify(notes, null, 2)}</pre>`);
 });
 
 try {
