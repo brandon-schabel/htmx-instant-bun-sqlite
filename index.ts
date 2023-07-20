@@ -1,5 +1,5 @@
 import { createServerFactory } from "instant-bun/modules/server-factory";
-import { createNote, readNotes } from "./db";
+import { createNote, readAllNotes } from "./db";
 import tailwindConfig from "./tailwind.config";
 
 const server = createServerFactory();
@@ -70,13 +70,43 @@ server.addRoute("/clicked", () => {
 });
 
 server.addRoute("/add-note", async () => {
-  await createNote({
-    id: "test",
-    text: "This is a test note",
-  });
+  try {
 
-  const notes = await readNotes();
-  return new Response(`<pre>${JSON.stringify(notes, null, 2)}</pre>`);
+    
+    await createNote({
+      id: "test",
+      text: "This is a test note",
+    });
+  } catch (err) {
+    console.error("error creating note", err);
+    return new Response("<p>error creating note</p>", {
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  }
+
+  const notesArray = [];
+
+  try {
+    const notes = await readAllNotes();
+
+    notesArray.push(...notes);
+  } catch (err) {
+    console.error("error reading notes", err);
+
+    return new Response("<p>error reading notes</p>", {
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  }
+
+  return new Response(`<pre>${JSON.stringify(notesArray, null, 2)}</pre>`, {
+    headers: {
+      "Content-Type": "text/html",
+    },
+  });
 });
 
 try {
